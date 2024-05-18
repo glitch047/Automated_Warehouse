@@ -1,0 +1,94 @@
+{% extends "Manager/layouts/base.html" %}
+
+{% block title %} Managers {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="panel-header panel-header-sm">
+    </div>
+    <div class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">Product Logs</h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class=" text-primary">
+                    <th>
+                      Name
+                    </th>
+                    <th>
+                        Batch
+                    </th>
+                    <th>
+                      Created At
+                    </th>
+                    <th>
+                     Action Taken
+                    </th>
+                  </thead>
+                  <tbody>
+                    {% for page in page %}
+                      <tr>
+                        <td>
+                          {{page.name}}
+                        </td>
+                        <td>
+                          {{page.batchno}}
+                        </td>
+                        <td>
+                          {{page.created_date}}
+                        </td>
+                        <td>
+                          {{page.action}}
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                        {% if page.has_previous %}
+                        <a href="?page={{page.previous_page_number}}" 
+                        class="btn btn-primary mx-2">Previous</a>
+                        {% endif %}
+                        
+                            <a href="?page=1" class="btn btn-primary">First</a>
+                        
+                            {% for num in page.paginator.page_range %}
+                                {% if num == page.number %}
+                                    <!-- <span>{{ num }}</span> -->
+                                {% else %}
+                                    <a href="?page={{num}}" class="btn btn-primary mx-2">
+                                {{ num }}
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        
+                            <a href="?page={{page.paginator.num_pages}}" class="btn btn-primary mx-2">
+                        Last
+                        </a>
+                            {% if page.has_next %}
+                                <a href="?page={{page.next_page_number}}" class="btn btn-primary mx-2">
+                        Next
+                        </a>
+                    {% endif %}
+                    </tr>
+                </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

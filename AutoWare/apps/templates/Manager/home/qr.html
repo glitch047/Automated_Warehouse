@@ -1,0 +1,111 @@
+{% extends "Manager/layouts/base.html" %}
+
+{% block title %} Employee {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="panel-header panel-header-sm">
+    </div>
+    <div class="content">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="title">Generate QR</h5>
+            </div>
+            <div class="card-body">
+              <form method="POST" >
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col-md-4 pr-1">
+                    <div class="form-group">
+                      <label>Enter text/link to generate a QR code</label>
+                      <!-- <input type="text" class="form-control" placeholder="Username" > -->
+                      <input type="text" class="form-control" aria-describedby="inputGroup-sizing-default" name="qr_text" autofocus>
+                    </div>
+                  </div>
+                </div>
+                <!-- <button type="submit" name="submit" class="btn btn-fill btn-primary">Save Changes</button> -->
+                <input  class="btn btn-fill btn-primary" type="submit" value="Generate QR">
+              </form> 
+              {% if qr_image_base64 %}
+              <h4><center>QR for {{ variable }} is:</center></h4></br>
+                {% endif %}
+                <div class="input-group mb-3">
+                <div style="margin: auto">
+                    {% if qr_image_base64 %}
+                    <img src="data:image/png;base64,{{ qr_image_base64 }}" alt="QR Code">
+                    <div class="download-share-buttons">
+                        <center><button class="btn btn-primary" onclick="downloadQR()">Download</button></center>
+                    </div>
+                    {% endif %}
+                </div>
+                <script>
+                    function downloadQR() {
+                      const link = document.createElement('a');
+                      link.href = 'data:image/png;base64,{{ qr_image_base64 }}';
+                      link.download = 'qr_code.png';
+                      link.click();
+                    }
+                
+                    function shareQR() {
+                      const dataUrl = 'data:image/png;base64,{{ qr_image_base64 }}';
+                      if (navigator.share) {
+                        navigator.share({
+                          title: 'QR Code',
+                          text: 'Check out this QR Code',
+                          url: dataUrl
+                        })
+                          .then(() => console.log('Shared successfully'))
+                          .catch((error) => console.log('Error sharing:', error));
+                      } else {
+                        const newWindow = window.open(dataUrl);
+                        if (!newWindow) {
+                          alert('Pop-up blocked. Please allow pop-ups for this website and try again.');
+                        }
+                      }
+                    }
+                  </script>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card card-user">
+            <div class="image">
+              <img src="/static/assets/img/bg5.jpg" alt="...">
+            </div>
+            <div class="card-body">
+              <div class="author">
+                <a href="#">
+                  {% if request.user.image %}
+                  <img class="avatar border-gray" src="{{ request.user.image.url }}" alt="...">
+                  {% else %}
+                  <img class="avatar border-gray" src="/static/assets/img/default-avatar.png" alt="...">
+                  {% endif %}
+                  <h5 class="title">
+                    {{ request.user.username }}
+                  </h5>
+                </a>
+                <p class="description">
+                  {{ request.user.email }}
+                </p>
+              </div>
+              <p class="description text-center">
+                {{ request.user.first_name }}
+                {{ request.user.last_name }}
+              </p>
+            </div>
+            <hr>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

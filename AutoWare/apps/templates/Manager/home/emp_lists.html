@@ -1,0 +1,97 @@
+{% extends "Manager/layouts/base.html" %}
+
+{% block title %} Managers {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="panel-header panel-header-sm">
+    </div>
+    <div class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">All Employees</h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class=" text-primary">
+                    <th>
+                      Name
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                      Department
+                    </th>
+                    <th class="text-right">
+                      Actions
+                    </th>
+                  </thead>
+                  <tbody>
+                    {% for warteams in warteams %}
+                      <tr>
+                        <td>
+                          {{warteams.name}}
+                        </td>
+                        <td>
+                          {{warteams.user.email}}
+                        </td>
+                        <td>
+                          {% if  warteams.user.is_warteam %}
+                            WareHouse Team
+                          {% elif  warteams.user.is_opsteam %}
+                            Operations Team
+                          {% else %}
+                            Unknown
+                          {% endif %}
+                        </td>
+                       
+                        <td class="text-right">
+                          <a href="{% url 'edit_emp' warteams.user.id %}" class="btn btn-primary">Edit</a>
+                          <a href="{% url 'delete_emp' warteams.user.id %}" class="btn btn-danger">Delete</a>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                    {% for opsteam in opsteam %}
+                    <tr>
+                      <td>
+                        {{opsteam.name}}
+                      </td>
+                      <td>
+                        {{opsteam.user.email}}
+                      </td>
+                      <td>
+                        {% if  opsteam.user.is_warteam %}
+                          WareHouse Team
+                        {% elif  opsteam.user.is_opsteam %}
+                          Operations Team
+                        {% else %}
+                          Unknown
+                        {% endif %}
+                      </td>
+                      
+                      <td class="text-right">
+                        <a href="{% url 'edit_emp' opsteam.user.id %}" class="btn btn-primary">Edit</a>
+                        <a href="{% url 'delete_emp' opsteam.user.id %}" class="btn btn-danger">Delete</a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
