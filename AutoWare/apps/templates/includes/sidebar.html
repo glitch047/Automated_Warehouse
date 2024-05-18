@@ -1,0 +1,69 @@
+<div class="sidebar" data-color="orange">
+    <!--
+      Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
+  -->
+    <div class="logo">
+      <a target="_blank"
+      href="/" 
+        class="simple-text logo-mini">
+        <!-- AW -->
+      </a>
+      <a href="/"><img src="/static/assets/img/logo.png" alt="#" width="100px" /></a>
+    </div>
+    <div class="sidebar-wrapper" id="sidebar-wrapper">
+      <ul class="nav">
+      {% if request.user.is_authenticated %}
+        <li class="{% if 'index' in segment %} active {% endif %}">
+          <a href="{% url 'home' %}">
+            <i class="now-ui-icons design_app"></i>
+            <p>Dashboard</p>
+          </a>
+        </li>
+        <li class="{% if 'add_manager' in segment %} active {% endif %}">
+          <a href="{% url 'add_manager' %}">
+            <i class="now-ui-icons education_atom"></i>
+            <p>Add Manager</p>
+          </a>
+        </li>
+        <li class="{% if 'manager_list' in segment %} active {% endif %}">
+          <a href="{% url 'manager_lists' %}">
+            <i class="now-ui-icons design_bullet-list-67"></i>
+            <p>Manager Lists</p>
+          </a>
+        </li>
+        <li class="{% if 'notification' in segment %} active {% endif %}">
+          <a href="{% url 'notification' user.id %}">
+            <i class="now-ui-icons ui-1_bell-53"></i>
+            <p>notifications</p>
+          </a>
+        </li>
+        <li class="{% if 'user_list' in segment %} active {% endif %}">
+          <a href="{% url 'user_list' %}">
+            <i class="now-ui-icons design_bullet-list-67"></i>
+            <p>Users Lists</p>
+          </a>
+        </li>
+        <li class="{% if 'admin_profile' in segment %} active {% endif %}">
+          <a href="{% url 'admin_profile' user.id %}">
+            <i class="now-ui-icons users_single-02"></i>
+            <p>User Profile</p>
+          </a>
+        </li>
+        <li class="">
+            <a href="{% url 'logout' %}">
+                <i class="now-ui-icons media-1_button-power"></i>
+                <p>Logout</p>
+            </a>
+        </li>        
+        {% else %}
+        <li class="active">
+          <a target="_blank"
+             href="/login">
+            <i class="now-ui-icons objects_spaceship"></i>
+            <p>Login</p>
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>

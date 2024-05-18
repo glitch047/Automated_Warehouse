@@ -1,0 +1,220 @@
+{% extends "Manager/layouts/base.html" %}
+
+{% block title %} Alerts {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="panel-header">
+      <div class="header text-center">
+        <h2 class="title">Notifications</h2>
+       </div>
+    </div>
+    <div class="content">
+      <div class="row">
+        <div class="col-md-7">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">Create Notifications</h4>
+            </div>
+            <div class="card-body">
+              <form method="POST" action="#"> 
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col-md-4 pr-1">
+                    <div class="form-group">
+                      <label>Title</label>
+                      {{ form.title }}
+                    </div>
+                  </div>
+                  <div class="col-md-6 pl-1">
+                    <div class="form-group">
+                      <label>Message</label>
+                      {{ form.message }}
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 pr-2">
+                    <div class="form-group">
+                      <label>Assigned To</label>
+                      <!-- {{ form.assigned_to }} -->
+                      <select class="form-control" id="assigned_to" name="assigned_to">
+                        <option value="">Select User Category</option>
+                        <option value="1">Manager</option>
+                        <option value="2">WareHouse Team</option>
+                        <option value="3">Operations Team</option>
+                        <option value="4">Suppliers</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4 px-1">
+                    <div class="form-group">
+                      <label>Status</label>
+                      {{ form.status }}
+                    </div>
+                  </div>
+                  <div class="col-md-4 pr-2">
+                    <div class="form-group">
+                      <label>Assigned Person</label>
+                      
+                        <!-- <option value="">Select Assignee</option> -->
+                        <select class="form-control" id="tname" name="tname">
+                          <!-- <option value="all">All</option> -->
+                        </select>
+                    </div>
+                  </div>
+                </div>
+                <input  class="btn btn-fill btn-primary" type="submit" value="Create">
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">Previous Issued Notifications</h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class=" text-primary">
+                    <th>
+                      Title
+                    </th>
+                    <th>
+                      Message
+                    </th>
+                    <th>
+                      Status
+                    </th>
+                    <th>
+                      Actions
+                    </th>
+                  </thead>
+                  <tbody>
+                    {% for notification in notifications %}
+                    <tr>
+                      <td>
+                        {{ notification.title }}
+                      </td>
+                      <td>
+                        {{ notification.message }}
+                      </td>
+                      <td>
+                        {{ notification.status }}
+                      </td>
+                      <td>
+                        <a href="{% url 'manager_notification_edit' user.id notification.id %}" class="btn btn-danger">Edit</a>
+                        <a href="{% url 'manager_notification_delete' user.id notification.id %}" class="btn btn-danger">Delete</a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">Previous Notifications</h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class=" text-primary">
+                    <th>
+                      Title
+                    </th>
+                    <th>
+                      Message
+                    </th>
+                    <th>
+                      Created By
+                    </th>
+                    <th>
+                      Created Date
+                    </th>
+                    <th>
+                      Status
+                    </th>
+                  </thead>
+                  <tbody>
+                    {% for assigned_notifications in assigned_notifications %}
+                    <tr>
+                      <td>
+                        {{ assigned_notifications.title }}
+                      </td>
+                      <td>
+                        {{ assigned_notifications.message }}
+                      </td>
+                      <td>
+                        {% if assigned_notifications.user.is_superuser  %}
+                          Admin
+                        {% elif assigned_notifications.user.is_opsteam %}
+                          Operations Team
+                        {% elif assigned_notifications.user.is_warteam %}
+                          WareHouse Team
+                        {% elif assigned_notifications.user.is_supplier %}
+                          Supplier
+                        {% endif %}
+                      </td>
+                      <td>
+                        {{ assigned_notifications.created_date }}
+                      </td>
+                      <td>
+                        {{ assigned_notifications.status }}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+   <script type="text/javascript">
+      $(document).ready(function() {
+          $('#assigned_to').change(function() {
+              var selectedCategory = $(this).val();
+              $.ajax({
+                  type: 'GET',
+                  url: '/api/get_users_by_category/', 
+                  data: {
+                      category: selectedCategory
+                  },
+                  success: function(response) {
+                      $('#tname').empty();
+                      $('#tname').append($('<option></option>').attr('value', '').text('Select Assignee'));
+                      if(response.length > 0)
+                      {
+                        $('#tname').append($('<option></option>').attr('value', 'all').text('All'));
+                        $.each(response, function(index, user) {
+                            $('#tname').append($('<option></option>').attr('value', user.id).text(user.username));
+                        });
+                      }
+                      
+                      
+                  },
+                  error: function(xhr, errmsg, err) {
+                      console.log(xhr.status + ": " + xhr.responseText); 
+                  }
+              });
+          });
+          
+
+          $('#assigned_to').trigger('change');
+      });
+  </script> 
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

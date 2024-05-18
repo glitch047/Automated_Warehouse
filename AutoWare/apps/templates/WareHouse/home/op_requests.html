@@ -1,0 +1,131 @@
+{% extends "WareHouse/layouts/base.html" %}
+
+{% block title %} Operations {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="panel-header">
+      <div class="header text-center">
+        <h2 class="title">Operations Team Requests</h2>
+       </div>
+    </div>
+    <div class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">Latest Requests</h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class=" text-primary">
+                    <th>
+                      Name
+                    </th>
+                    <th>
+                      Quantity
+                    </th>
+                    <th>
+                        Requested By
+                    </th>
+                    <th>
+                        Date Requested
+                    </th>
+                    <th>
+                      Actions
+                    </th>
+                  </thead>
+                  <tbody>
+                    {% for requests in requests %}
+                    <tr>
+                      <td>
+                        {{ requests.product }}
+                      </td>
+                      <td>
+                        {{ requests.quantity }}
+                      </td>
+                      <td>
+                        {{ requests.user.email }}
+                      </td>
+                      <td>
+                        {{ requests.created_date }}
+                      </td>
+                      <td>
+                        <a href="{% url 'war_req_acc' requests.id 1 %}" class="btn btn-danger">Accept</a>
+                        <a href="{% url 'war_req_acc' requests.id 0 %}" class="btn btn-danger">Reject</a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">Request History</h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class=" text-primary">
+                    <th>
+                        Name
+                      </th>
+                      <th>
+                        Quantity
+                      </th>
+                      <th>
+                          Requested By
+                      </th>
+                      <th>
+                          Date Requested
+                      </th>
+                      <th>
+                        Status
+                      </th>
+                  </thead>
+                  <tbody>
+                    {% for prev_requests in prev_requests %}
+                    <tr>
+                          <td>
+                            {{ prev_requests.product }}
+                          </td>
+                          <td>
+                            {{ prev_requests.quantity }}
+                          </td>
+                          
+                          <td>
+                            {{ prev_requests.user.email }}
+                          </td>
+                          <td>
+                            {{ prev_requests.created_date }}
+                          </td>
+                          <td>
+                            {% if prev_requests.status == 1 %}
+                            <span class="badge badge-success">Accepted</span>
+                            {% else %}
+                            <span class="badge badge-danger">Rejected</span>
+                            {% endif %}
+                          </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

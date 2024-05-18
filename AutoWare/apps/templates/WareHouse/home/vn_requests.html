@@ -1,0 +1,127 @@
+{% extends "WareHouse/layouts/base.html" %}
+
+{% block title %} Alerts {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="panel-header">
+      <div class="header text-center">
+        <h2 class="title">Vendor Requests</h2>
+       </div>
+    </div>
+    <div class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">Pending Requests</h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class=" text-primary">
+                    <th>
+                      Image
+                    </th>
+                    <th>
+                      Name
+                    </th>
+                    <th>
+                      Quantity
+                    </th>
+                    <th>
+                      Quotations
+                    </th>
+                  </thead>
+                  <tbody>
+                    {% for requests in requests %}
+                    <tr>
+                      <td>
+                        {% if requests.image %}
+                            <img src="{{ requests.image.url }}" alt="{{ requests.product }}" width="120">
+                        {% endif %}
+                      </td>
+                      <td>
+                        {{ requests.product }}
+                      </td>
+                      <td>
+                        {{ requests.quantity }}
+                      </td>
+                      <td>
+                        {{ requests.quote }}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">Request History</h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class=" text-primary">
+                    <th>
+                        Image
+                      </th>
+                      <th>
+                        Name
+                      </th>
+                      <th>
+                        Quantity
+                      </th>
+                      <th>
+                        Quotations
+                      </th>
+                      <th>
+                        Status
+                      </th>
+                  </thead>
+                  <tbody>
+                    {% for prev_requests in prev_requests %}
+                    <tr>
+                      <td>
+                        {% if prev_requests.image %}
+                            <img src="{{ prev_requests.image.url }}" alt="{{ prev_requests.product }}" width="120">
+                        {% endif %}
+                      </td>
+                      <td>
+                        {{ prev_requests.product }}
+                      </td>
+                      <td>
+                        {{ prev_requests.quantity }}
+                      </td>
+                      <td>
+                        {{ prev_requests.quote }}
+                      </td>
+                      <td>
+                        {% if prev_requests.status == 1 %}
+                        <span class="badge badge-success">Accepted</span>
+                        {% else %}
+                        <span class="badge badge-danger">Rejected</span>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

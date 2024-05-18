@@ -1,0 +1,86 @@
+{% extends "Supplier/layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="panel-header panel-header-lg">
+      <canvas id="bigDashboardChart"></canvas>
+    </div>
+    <div class="content">
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="card card-chart">
+            <div class="card-header">
+              <h5 class="card-category">Monthly</h5>
+              <h4 class="card-title">Products Out</h4>
+            </div>
+            <div class="card-body">
+              <div class="chart-area">
+                <canvas id="lineChartExample"></canvas>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="stats">
+                <i class="now-ui-icons arrows-1_refresh-69"></i> Just Updated
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="card card-chart">
+            <div class="card-header">
+              <h5 class="card-category">Product Statistics</h5>
+              <h4 class="card-title">Daily Performance</h4>
+            </div>
+            <div class="card-body">
+              <div class="chart-area">
+                <canvas id="lineChartExampleWithNumbersAndGrid"></canvas>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="stats">
+                <i class="now-ui-icons arrows-1_refresh-69"></i> Just Updated
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="card card-chart">
+            <div class="card-header">
+              <h5 class="card-category">Monthly</h5>
+              <h4 class="card-title">Products In</h4>
+            </div>
+            <div class="card-body">
+              <div class="chart-area">
+                <canvas id="barChartSimpleGradientsNumbers"></canvas>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="stats">
+                <i class="now-ui-icons  arrows-1_refresh-69"></i> Updated Now
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <script src="/static/assets/js/plugins/chartjs.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Javascript method's body can be found in assets/js/demos.js
+      demo.initDashboardPageCharts();
+
+    });
+  </script>
+
+{% endblock javascripts %}

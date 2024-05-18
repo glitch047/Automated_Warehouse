@@ -1,0 +1,97 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Manager {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="panel-header panel-header-sm">
+    </div>
+    <div class="content">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="title">Edit Profile</h5>
+            </div>
+            <div class="card-body">
+               <form method="POST" action="#" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col-md-4 pr-1">
+                    <div class="form-group">
+                      <label>Username</label>
+                      {{ form.username }}
+                    </div>
+                  </div>
+                  <div class="col-md-6 pl-1">
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Email address</label>
+                      {{ form.email }}
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4 pr-1">
+                    <div class="form-group">
+                      <label>Password</label>
+                      {{ form.password }}
+                    </div>
+                  </div>
+                  <div class="col-md-4 px-1">
+                    <div class="form-group">
+                      <label>Re-Type Password</label>
+                      {{ form.retype_password }}
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Image Upload</label>
+                  <!-- <input class="form-control" type="file" id="formFile"> -->
+                  {{form.image}}
+                </div>
+                <input  class="btn btn-fill btn-primary" type="submit" value="Edit">
+              </form> 
+               
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card card-user">
+            <div class="image">
+              <img src="/static/assets/img/bg5.jpg" alt="...">
+            </div>
+            <div class="card-body">
+              <div class="author">
+                <a href="#">
+                  {% if request.user.image %}
+                  <img class="avatar border-gray" src="{{ request.user.image.url }}" alt="...">
+                  {% else %}
+                  <img class="avatar border-gray" src="/static/assets/img/default-avatar.png" alt="...">
+                  {% endif %}
+
+                  <h5 class="title">
+                    {{ request.user.username }}
+                  </h5>
+                </a>
+                <p class="description">
+                  {{ request.user.email }}
+                </p>
+              </div>
+              <p class="description text-center">
+                {{ request.user.username }} || 
+                {{ request.user.email }}
+              </p>
+            </div>
+            <hr>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

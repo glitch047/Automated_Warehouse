@@ -1,0 +1,126 @@
+{% extends "Manager/layouts/base.html" %}
+{% block title %} Managers {% endblock %}
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% load template_filters %}
+
+{% block content %}
+
+    <div class="panel-header panel-header-sm">
+    </div>
+    <div class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">Product Stats</h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class=" text-primary">
+                    <th>
+                      Name
+                    </th>
+                    <th>
+                      Quantity
+                    <th>
+                      Updated At
+                    </th>
+                    <th>
+                      Actions
+                    </th>
+                  </thead>
+                  <tbody>
+                    {% for product in product_names %}
+                      <tr>
+                        <td>
+                          {{product_names|get_item:forloop.counter0}}
+                        </td>
+                        <td>
+                          {{ product_counts|get_item:forloop.counter0 }}
+                        </td>
+                        <td>
+                          {{ latest_dates.latest_date|get_item:forloop.counter0 }}
+                        </td>
+                        <td>
+                          <a href="{% url 'delete_product' product_names|get_item:forloop.counter0 %}" class="btn btn-danger">Delete</a>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                  <tfoot>
+                    <tr class="align-middle">
+                      <div class="d-flex align-items-center justify-content-between">
+                        <div class="">
+                          {% if page.has_previous %}
+                          <a href="?page={{page.previous_page_number}}" 
+                          class="btn btn-primary mx-2">Previous</a>
+                          {% endif %}
+                          
+                              <a href="?page=1" class="btn btn-primary">First</a>
+                          
+                              {% for num in page.paginator.page_range %}
+                                  {% if num == page.number %}
+                                      <!-- <span>{{ num }}</span> -->
+                                  {% else %}
+                                      <a href="?page={{num}}" class="btn btn-primary mx-2">
+                                  {{ num }}
+                                      </a>
+                                  {% endif %}
+                              {% endfor %}
+                          
+                              <a href="?page={{page.paginator.num_pages}}" class="btn btn-primary mx-2">
+                          Last
+                          </a>
+                              {% if page.has_next %}
+                                  <a href="?page={{page.next_page_number}}" class="btn btn-primary mx-2">
+                          Next
+                          </a>
+                      {% endif %}
+                      </div>
+                      <div class="">
+                        <div class="text-end align-middle">
+                          <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#exampleModal">
+                            Add Product
+                          </button>
+                        </div>
+                      </div>
+                      </div>
+                    </tr>
+                </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add a Product</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form actions="{% url 'product.submit' %}" method="POST">
+        {% csrf_token %}
+        <div class="modal-body">
+          <label>Product Name</label>
+          {{form.name}}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
