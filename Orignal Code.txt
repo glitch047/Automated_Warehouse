@@ -1,0 +1,124 @@
+----------------------Orignal PHP----------------------
+<?php
+// Database connection details
+$servername = "127.0.0.1";
+$username = "root"; // Replace with your actual database username
+$password = ""; // Replace with your actual database password
+$dbname = "autoware";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Collect data from the form or QR code
+    $name = $_POST['name'];
+    $batchno = $_POST['batchno'];
+    $productno = $_POST['productno'];
+
+    // Insert data into the database
+    $sql = "INSERT INTO home_product (name, batchno, productno) VALUES ('$name', $batchno, $productno)";
+
+    if ($conn->query($sql) === TRUE) {
+        echo "Data inserted successfully";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+}
+
+// Close the database connection
+$conn->close();
+?>
+
+
+----------------------Orignal Python----------------------
+
+
+import cv2
+import numpy as np
+import pyzbar.pyzbar as pyzbar
+import requests
+import time
+import socket
+import urllib.error
+import urllib.request
+
+font = cv2.FONT_HERSHEY_PLAIN
+
+URL = 'http://192.168.43.53/cam-hi.jpg'
+PHP_SCRIPT_URL = 'http://127.0.0.1/insert_php/insert_data.php'
+MAX_RETRIES = 100000
+RETRY_DELAY = 0.0001  # second
+
+def process_qr_code(data):
+    # Split the data into name and sortno
+    name, batchno, productno = data.split(',')
+    
+    # Send data to the PHP script on the server
+    payload = {'name': name, 'batchno': batchno, 'productno': productno}
+    
+    try:
+        response = requests.post(PHP_SCRIPT_URL, data=payload)
+        response.raise_for_status()
+        print("Data sent successfully to the server")
+
+    except requests.exceptions.RequestException as req_err:
+        print(f"Failed to send data. Request Exception: {req_err}")
+
+def main():
+    cv2.namedWindow("live transmission", cv2.WINDOW_AUTOSIZE)
+
+    max_retries = MAX_RETRIES
+
+    while True:
+        try:
+            img_resp = urllib.request.urlopen(URL, timeout=15)
+            imgnp = np.array(bytearray(img_resp.read()), dtype=np.uint8)
+            frame = cv2.imdecode(imgnp, -1)
+
+            frame = cv2.resize(frame, (640, 480))
+
+            decoded_objects = pyzbar.decode(frame)
+            for obj in decoded_objects:
+                current_data = obj.data.decode('utf-8')
+
+                print("Type:", obj.type)
+                print("Data: ", current_data)
+
+                process_qr_code(current_data)
+
+                cv2.putText(frame, str(current_data), (50, 50), font, 2, (255, 0, 0), 3)
+
+            cv2.imshow("live transmission", frame)
+
+            key = cv2.waitKey(1)
+            if key == 27:
+                break
+
+        except urllib.error.URLError as e:
+            print(f"URLError: {e}")
+            if isinstance(e.reason, socket.timeout):
+                print("Timeout occurred. Retrying...")
+                max_retries -= 1
+                if max_retries <= 0:
+                    print("Max retries reached. Exiting.")
+                    break
+                time.sleep(RETRY_DELAY)
+            else:
+                print("Unknown error. Logging and continuing.")
+                print(f"Error details: {e}")
+                time.sleep(RETRY_DELAY)
+        except requests.exceptions.RequestException as req_err:
+            print(f"RequestException: {req_err}")
+            time.sleep(RETRY_DELAY)
+
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    main()
+
