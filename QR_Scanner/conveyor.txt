@@ -1,0 +1,45 @@
+
+void setup() {
+  // initialize serial communication at 9600 bits per second:
+  Serial.begin(9600);
+  pinMode(12,OUTPUT);
+    pinMode(11,OUTPUT);
+
+        digitalWrite(11,HIGH);
+            digitalWrite(12,HIGH);
+}
+
+// the loop routine runs over and over again forever:
+void loop() {
+  // read the input on analog pin 0:
+  int sensorValue = analogRead(A0);
+  // print out the value you read:
+  Serial.println(sensorValue);
+    int sensorValue1 = analogRead(A1);
+  // print out the value you read:
+  Serial.println(sensorValue1);
+  delay(1);        // delay in between reads for stability
+
+  if(sensorValue<100)
+  {    delay(500);
+    digitalWrite(11,LOW);
+    delay(1500);  
+    digitalWrite(11,HIGH);
+    delay(1000);
+        digitalWrite(11,LOW);
+    delay(10000);  
+    digitalWrite(11,HIGH);
+
+  }
+
+   else if(sensorValue1<100)
+  { delay(500);
+    digitalWrite(12,LOW);
+    delay(1500);  
+    digitalWrite(12,HIGH);
+    delay(1000);
+        digitalWrite(12,LOW);
+    delay(10000);  
+    digitalWrite(12,HIGH);
+ }
+}
